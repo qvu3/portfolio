@@ -1,0 +1,17 @@
+This analysis using Tableau to analyze and visualize trends in power loss event (error code 41) happen on a mini computer 
+that connect to a 12V car battery power supply through a solar charge controller.
+
+Data used:
+  - system event logs
+  - daily summaries of precipitation amount in the zip code where the mini pc located at
+
+Analysis:
+  - Tableau Public dashboard: https://public.tableau.com/views/PowerLossTrendonMiniPC/KernelErrorCode41TrendonMiniPC?:language=en-US&:display_count=n&:origin=viz_share_link
+
+Interpretation: Power loss happen more frequently:
+  - in the early morning, from 7 to 9 AM
+  - when there is more rain
+
+Recommendation:
+  - replace the battery to Lithium Iron Phosphate (LiFePO4) may help holding the power longer, and may keep the mini PC up during the night and in wet day.
+  - check wiring between batteries and solar charge controller
