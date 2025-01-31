@@ -1,0 +1,66 @@
+/*
+Introduction: This is a data analysis of how global price of coffee changes over the years.
+
+Units:  U.S. Cents per Pound, Not Seasonally Adjusted
+Frequency:  Monthly
+Notes:
+Value represents the benchmark prices which are representative of the global market. They are determined by the largest exporter of a given commodity. Prices are period averages in nominal U.S. dollars.
+Copyright © 2016, International Monetary Fund. Reprinted with permission. Complete terms of use and contact details are available at http://www.imf.org/external/terms.htm.
+Suggested Citation:
+International Monetary Fund, Global price of Coffee, Other Mild Arabica [PCOFFOTMUSDM], retrieved from FRED, Federal Reserve Bank of St. Louis; https://fred.stlouisfed.org/series/PCOFFOTMUSDM, January 31, 2025. 
+Link of data: https://fred.stlouisfed.org/series/PCOFFOTMUSDM
+*/
+
+USE MyCompany;
+
+SELECT * FROM coffee_price;
+
+-- Rename price column
+ALTER TABLE coffee_price
+CHANGE PCOFFOTMUSDM US_cents_per_pound float;
+
+-- View Min, Max, Avg prices
+SELECT 
+    MIN(US_cents_per_pound),
+	MAX(US_cents_per_pound),
+    AVG(US_cents_per_pound)
+FROM coffee_price;
+
+-- CTE: Average price by Year
+WITH split_date_table AS (
+SELECT 
+	LEFT(observation_date, 4) AS Year,
+    SUBSTRING(observation_date,6,2) AS Month,
+    RIGHT(observation_date, 2) AS Day,
+    US_cents_per_pound
+FROM coffee_price)
+SELECT Year, ROUND(AVG(US_cents_per_pound),2) AS rounded_average_price
+FROM split_date_table
+GROUP BY Year
+ORDER BY rounded_average_price DESC;
+
+-- Create a View to visualize in Tableau
+CREATE VIEW coffee_price_by_date 
+AS 
+SELECT 
+	LEFT(observation_date, 4) AS Year,
+    SUBSTRING(observation_date,6,2) AS Month,
+    RIGHT(observation_date, 2) AS Day,
+    US_cents_per_pound
+FROM coffee_price;
+
+/*
+Please view my Tableau Dashboard here: 
+https://public.tableau.com/views/CoffeePriceoverTime/Dashboard1?:language=en-US&publish=yes&:sid=&:redirect=auth&:display_count=n&:origin=viz_share_link
+*/
+
+/*
+1. Interpretation:
+- The data spans from the year 1990 to 2024.
+- The lowest price is 50.8 cents, and the highest is 344.1 cents.
+- The trend: Coffee prices generally increase over time, although they fluctuate during different periods. For example, prices increased over a 5-year period from 1992 to 1997, 
+then decreased during the next 5 years. The increasing period then expanded from 5 years to a 9-year period (2002 - 2011), followed by an 8-year increase (2011 - 2019). 
+
+2. Prediction: 
+My prediction is that prices will continue to rise from 2019 to at least 2024 and possibly up to 2029 before entering their regular downward cycle.
+*/
